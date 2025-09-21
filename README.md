@@ -17,16 +17,19 @@ This example replicates the classic Card (1995) study on returns to education us
 
 ```julia
 using EndogenousLinearModelsEstimators
-using RDatasets
+using CSV
 using DataFrames
+using Downloads
+cardcsv = Downloads.download("https://raw.githubusercontent.com/vincentarelbundock/Rdatasets/refs/heads/master/csv/wooldridge/card.csv")
+
 
 # Load the Card dataset
-card_data = dataset("Ecdat", "Card")
+card_data = CSV.read(cardcsv, DataFrame)
 
 # Prepare the data following R ivmodel example
-Y = card_data.lwage     # Log wages (outcome)
-D = card_data.educ      # Education (endogenous regressor)
-Z = card_data.nearc4    # Near 4-year college (instrument)
+Y = card_data.lwage                     # Log wages (outcome)
+D = card_data.educ[:,:]                 # Education (endogenous regressor)
+Z = [card_data.nearc4 card_data.nearc2] # Near 4-year college (instrument)
 
 # Exogenous control variables (same as in R ivmodel example)
 Xnames = ["exper", "expersq", "black", "south",
