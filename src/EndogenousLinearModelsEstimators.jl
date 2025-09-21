@@ -51,6 +51,9 @@ export EndogenousLinearModelsEstimationResults
 # Export main functions
 export iv_liml, iv_fuller, iv_2sls
 
+# Export accessor functions
+export coef, vcov, residuals, dof
+
 # Export utility functions for advanced users
 export simulate_iv
 

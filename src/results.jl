@@ -7,19 +7,22 @@ Defines the unified result structure for all endogenous linear model estimators.
 using Printf
 
 """
-    EndogenousLinearModelsEstimationResults
+    EndogenousLinearModelsEstimationResults{T<:AbstractFloat}
 
 Unified result structure for all endogenous linear model estimators (LIML, Fuller, 2SLS).
 
+## Type Parameter
+- `T<:AbstractFloat` - Numeric type (e.g., Float64, Float32)
+
 ## Fields
 
-- `beta::Vector{Float64}` - Coefficient estimates
-- `vcov::Matrix{Float64}` - Variance-covariance matrix
-- `stderr::Vector{Float64}` - Standard errors
-- `residuals::Vector{Float64}` - Model residuals
+- `beta::Vector{T}` - Coefficient estimates
+- `vcov::Matrix{T}` - Variance-covariance matrix
+- `stderr::Vector{T}` - Standard errors
+- `residuals::Vector{T}` - Model residuals
 - `df::Int` - Degrees of freedom
 - `estimator::String` - Estimator type ("LIML", "Fuller", "2SLS")
-- `kappa::Union{Float64,Nothing}` - Kappa value (for LIML/Fuller only)
+- `kappa::Union{T,Nothing}` - Kappa value (for LIML/Fuller only)
 - `vcov_type::Symbol` - Variance estimator type (:homoskedastic, :HC0, :HC1)
 - `n::Int` - Sample size
 - `nparams::Int` - Number of estimated parameters
@@ -35,14 +38,14 @@ Unified result structure for all endogenous linear model estimators (LIML, Fulle
 - `residuals(result)` - Extract residuals
 - `dof(result)` - Extract degrees of freedom
 """
-struct EndogenousLinearModelsEstimationResults
-    beta::Vector{Float64}
-    vcov::Matrix{Float64}
-    stderr::Vector{Float64}
-    residuals::Vector{Float64}
+struct EndogenousLinearModelsEstimationResults{T<:AbstractFloat}
+    beta::Vector{T}
+    vcov::Matrix{T}
+    stderr::Vector{T}
+    residuals::Vector{T}
     df::Int
     estimator::String
-    kappa::Union{Float64,Nothing}
+    kappa::Union{T,Nothing}
     vcov_type::Symbol
     n::Int
     nparams::Int
@@ -50,7 +53,41 @@ struct EndogenousLinearModelsEstimationResults
     nexogenous::Int
 end
 
+# Type alias for backward compatibility with Float64 default
+const EstimationResults = EndogenousLinearModelsEstimationResults{Float64}
+
 # Convenience constructors
+function EndogenousLinearModelsEstimationResults(
+    beta::Vector{T},
+    vcov::AbstractMatrix{T},
+    stderr::Vector{T},
+    residuals::Vector{T},
+    df::Int,
+    estimator::String;
+    kappa::Union{T,Nothing} = nothing,
+    vcov_type::Symbol = :HC0,
+    n::Int,
+    nparams::Int,
+    ninstruments::Int,
+    nexogenous::Int
+) where {T<:AbstractFloat}
+    return EndogenousLinearModelsEstimationResults{T}(
+        beta,
+        Matrix(vcov),
+        stderr,
+        residuals,
+        df,
+        estimator,
+        kappa,
+        vcov_type,
+        n,
+        nparams,
+        ninstruments,
+        nexogenous
+    )
+end
+
+# Constructor that infers type from input arrays
 function EndogenousLinearModelsEstimationResults(
     beta::Vector,
     vcov::AbstractMatrix,
@@ -58,21 +95,29 @@ function EndogenousLinearModelsEstimationResults(
     residuals::Vector,
     df::Int,
     estimator::String;
-    kappa::Union{Float64,Nothing} = nothing,
+    kappa::Union{Real,Nothing} = nothing,
     vcov_type::Symbol = :HC0,
     n::Int,
     nparams::Int,
     ninstruments::Int,
     nexogenous::Int
 )
-    return EndogenousLinearModelsEstimationResults(
-        Float64.(beta),
-        Matrix(Float64.(vcov)),
-        Float64.(stderr),
-        Float64.(residuals),
+    # Infer the common floating point type
+    T = promote_type(eltype(beta), eltype(vcov), eltype(stderr), eltype(residuals))
+    if !(T <: AbstractFloat)
+        T = Float64  # Default to Float64 if no clear floating point type
+    end
+
+    kappa_converted = kappa === nothing ? nothing : T(kappa)
+
+    return EndogenousLinearModelsEstimationResults{T}(
+        Vector{T}(beta),
+        Matrix{T}(vcov),
+        Vector{T}(stderr),
+        Vector{T}(residuals),
         df,
         estimator,
-        kappa,
+        kappa_converted,
         vcov_type,
         n,
         nparams,
