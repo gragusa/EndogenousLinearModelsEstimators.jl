@@ -1,0 +1,22 @@
+name = "EndogenousLinearModelsEstimators"
+uuid = "307a5a7a-96de-11f0-0d39-09f968223a2d"
+authors = ["Gragusa <gragusa@users.noreply.github.com>"]
+version = "0.1.0"
+
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+RCall = "6f49c342-dc21-5d91-9882-a32aef131414"
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+
+[targets]
+test = ["Test", "RCall", "PyCall", "BenchmarkTools"]
+
+[compat]
+julia = "1.6"
