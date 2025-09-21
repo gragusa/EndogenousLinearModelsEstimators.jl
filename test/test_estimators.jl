@@ -69,7 +69,7 @@ using Printf
 
         # Test with exogenous variables
         X_exog = randn(rng, n, 2)
-        result_exog = iv_liml(y, x, Z; X=X_exog)
+        result_exog = iv_liml(y, x, Z, X_exog)
         @test length(result_exog.beta) == 4  # endogenous + 2 exogenous + intercept
         @test result_exog.nexogenous == 3  # 2 exogenous + intercept
 
@@ -110,7 +110,7 @@ using Printf
 
         # Test with exogenous variables
         X_exog = randn(rng, n, 2)
-        result_exog = iv_fuller(y, x, Z; X=X_exog, a=1.0)
+        result_exog = iv_fuller(y, x, Z, X_exog; a=1.0)
         @test length(result_exog.beta) == 4  # endogenous + 2 exogenous + intercept
         @test result_exog.nexogenous == 3
     end
@@ -141,7 +141,7 @@ using Printf
 
         # Test with exogenous variables
         X_exog = randn(rng, n, 2)
-        result_exog = iv_2sls(y, x, Z; X=X_exog)
+        result_exog = iv_2sls(y, x, Z, X_exog)
         @test length(result_exog.beta) == 4  # endogenous + 2 exogenous + intercept
         @test result_exog.nexogenous == 3
     end
@@ -168,7 +168,7 @@ using Printf
         # Test underidentification for 2SLS
         Z_under = Z[:, 1:1]  # Only 1 instrument
         X_over = randn(20, 3)  # 3 exogenous variables + intercept + endogenous = 5 params
-        @test_throws ArgumentError iv_2sls(y, x, Z_under; X=X_over)
+        @test_throws ArgumentError iv_2sls(y, x, Z_under, X_over)
     end
 
     @testset "Result Structure Tests" begin
