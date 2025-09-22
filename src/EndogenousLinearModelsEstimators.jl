@@ -50,6 +50,11 @@ include("estimators.jl")
 export EndogenousLinearModelsEstimationResults
 
 # Export main functions
+
 export liml, fuller, tsls
+
+# Export accessor functions
+export coef, vcov, residuals, dof
+
 
 end # module

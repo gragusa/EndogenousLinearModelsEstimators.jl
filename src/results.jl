@@ -7,6 +7,7 @@ Defines the unified result structure for all endogenous linear model estimators.
 using Printf
 
 """
+
     EndogenousLinearModelsEstimationResults{V, M}
 
 Unified result structure for all endogenous linear model estimators (LIML, Fuller, 2SLS).
@@ -39,6 +40,7 @@ Unified result structure for all endogenous linear model estimators (LIML, Fulle
 - `residuals(result)` - Extract residuals
 - `dof(result)` - Extract degrees of freedom
 """
+
 struct EndogenousLinearModelsEstimationResults{V, M}
     beta::V
     vcov::M
@@ -54,6 +56,7 @@ struct EndogenousLinearModelsEstimationResults{V, M}
     nexogenous::Int
 end
 
+
 # Convenience constructor
 function EndogenousLinearModelsEstimationResults(
     beta::V,
@@ -68,6 +71,7 @@ function EndogenousLinearModelsEstimationResults(
     nparams::Int,
     ninstruments::Int,
     nexogenous::Int
+
 ) where {V, M}
     return EndogenousLinearModelsEstimationResults{V, M}(
         beta,
@@ -76,7 +80,7 @@ function EndogenousLinearModelsEstimationResults(
         residuals,
         df,
         estimator,
-        kappa,
+        kappa_converted,
         vcov_type,
         n,
         nparams,

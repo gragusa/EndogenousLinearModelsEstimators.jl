@@ -142,6 +142,8 @@ using Printf
         # Test with exogenous variables
         exogenous = randn(rng, n, 2)
         result_exog = tsls(outcome, endogenous, instruments, exogenous)
+        X_exog = randn(rng, n, 2)
+        result_exog = iv_2sls(y, x, Z, X_exog)
         @test length(result_exog.beta) == 4  # endogenous + 2 exogenous + intercept
         @test result_exog.nexogenous == 3
     end
@@ -169,6 +171,9 @@ using Printf
         instruments_under = instruments[:, 1:1]  # Only 1 instrument
         exogenous_over = randn(20, 3)  # 3 exogenous variables + intercept + endogenous = 5 params
         @test_throws ArgumentError tsls(outcome, endogenous, instruments_under, exogenous_over)
+        Z_under = Z[:, 1:1]  # Only 1 instrument
+        X_over = randn(20, 3)  # 3 exogenous variables + intercept + endogenous = 5 params
+        @test_throws ArgumentError iv_2sls(y, x, Z_under, X_over)
     end
 
     @testset "Result Structure Tests" begin
