@@ -42,14 +42,14 @@ Unified result structure for all endogenous linear model estimators (LIML, Fulle
 - `dof(result)` - Extract degrees of freedom
 """
 
-struct EndogenousLinearModelsEstimationResults{V,M}
+struct EndogenousLinearModelsEstimationResults{V, M}
     beta::V
     vcov::M
     stderr::V
     residuals::V
     df::Int
     estimator::String
-    kappa::Union{<:Real,Nothing}
+    kappa::Union{<:Real, Nothing}
     vcov_type::Symbol
     n::Int
     nparams::Int
@@ -57,23 +57,22 @@ struct EndogenousLinearModelsEstimationResults{V,M}
     nexogenous::Int
 end
 
-
 # Convenience constructor
 function EndogenousLinearModelsEstimationResults(
-    beta::V,
-    vcov::M,
-    stderr::V,
-    residuals::V,
-    df::Int,
-    estimator::String;
-    kappa::Union{Real,Nothing} = nothing,
-    vcov_type::Symbol = :HC0,
-    n::Int,
-    nparams::Int,
-    ninstruments::Int,
-    nexogenous::Int,
-) where {V,M}
-    return EndogenousLinearModelsEstimationResults{V,M}(
+        beta::V,
+        vcov::M,
+        stderr::V,
+        residuals::V,
+        df::Int,
+        estimator::String;
+        kappa::Union{Real, Nothing} = nothing,
+        vcov_type::Symbol = :HC0,
+        n::Int,
+        nparams::Int,
+        ninstruments::Int,
+        nexogenous::Int
+) where {V, M}
+    return EndogenousLinearModelsEstimationResults{V, M}(
         beta,
         vcov,
         stderr,
@@ -85,7 +84,7 @@ function EndogenousLinearModelsEstimationResults(
         n,
         nparams,
         ninstruments,
-        nexogenous,
+        nexogenous
     )
 end
 
@@ -154,14 +153,12 @@ function Base.show(io::IO, result::EndogenousLinearModelsEstimationResults)
             end
         end
 
-        @printf(
-            io,
+        @printf(io,
             "%-12s %10.6f  %10.6f  %8.3f\n",
             param_name,
             result.beta[i],
             result.stderr[i],
-            result.beta[i] / result.stderr[i]
-        )
+            result.beta[i] / result.stderr[i])
     end
 
     println(io, "")
@@ -169,9 +166,9 @@ function Base.show(io::IO, result::EndogenousLinearModelsEstimationResults)
 end
 
 function Base.show(
-    io::IO,
-    ::MIME"text/plain",
-    result::EndogenousLinearModelsEstimationResults,
+        io::IO,
+        ::MIME"text/plain",
+        result::EndogenousLinearModelsEstimationResults
 )
     show(io, result)
 end

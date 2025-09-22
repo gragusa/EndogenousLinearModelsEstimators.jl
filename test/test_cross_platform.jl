@@ -1,11 +1,11 @@
 """
-Cross-platform validation tests against R and Python implementations
+Validation tests against R and Python implementations
 
 Tests the package estimators against gold-standard implementations:
 - R: ivmodel package (LIML, Fuller)
 - Python: linearmodels package (IVLIML)
 
-Also includes benchmarking capabilities.
+Only to be run locally and requires R and Python with the relevant packages installed.
 """
 
 using Test
@@ -75,7 +75,7 @@ const ATOL = 1e-6
                 n = 20,
                 ρ = 0.3,
                 R2 = 0.2,
-                β0 = 0.0,
+                β0 = 0.0
             )
             y, x, Z = data.y, data.x, data.z
 
@@ -109,12 +109,12 @@ const ATOL = 1e-6
                 @test_broken isapprox_results(
                     j_liml_homo.stderr[1],
                     liml_homo[:std_err][1],
-                    rtol = 0.01,
+                    rtol = 0.01
                 )
                 @test isapprox_results(
                     j_liml_hetero.stderr[1],
                     liml_hetero[:std_err][1],
-                    rtol = 0.01,
+                    rtol = 0.01
                 )
 
                 println("    ✓ LIML matches R ivmodel")
@@ -137,7 +137,7 @@ const ATOL = 1e-6
                 @test isapprox_results(j_fuller_homo.beta[1], fuller_homo[:point_est][1])
                 @test isapprox_results(
                     j_fuller_hetero.beta[1],
-                    fuller_hetero[:point_est][1],
+                    fuller_hetero[:point_est][1]
                 )
 
                 # Test kappa values
@@ -150,12 +150,12 @@ const ATOL = 1e-6
                 @test_broken isapprox_results(
                     j_fuller_homo.stderr[1],
                     fuller_homo[:std_err][1],
-                    rtol = 0.01,
+                    rtol = 0.01
                 )
                 @test isapprox_results(
                     j_fuller_hetero.stderr[1],
                     fuller_hetero[:std_err][1],
-                    rtol = 0.01,
+                    rtol = 0.01
                 )
 
                 println("    ✓ Fuller matches R ivmodel")
@@ -171,7 +171,7 @@ const ATOL = 1e-6
                     n = n,
                     ρ = 0.4,
                     R2 = 0.15,
-                    β0 = 1.0,
+                    β0 = 1.0
                 )
                 y2, x2, Z2 = data2.y, data2.x, data2.z
                 X2 = randn(rng2, n, p_exog)
@@ -238,7 +238,7 @@ const ATOL = 1e-6
                 n = 20,
                 ρ = 0.3,
                 R2 = 0.2,
-                β0 = 0.0,
+                β0 = 0.0
             )
             y, x, Z = data.y, data.x, data.z
 
@@ -276,12 +276,12 @@ const ATOL = 1e-6
                 @test isapprox_results(
                     j_liml_unadj.beta[1],
                     results["liml_unadj_beta"],
-                    rtol = 0.01,
+                    rtol = 0.01
                 )
                 @test isapprox_results(
                     j_liml_robust.beta[1],
                     results["liml_robust_beta"],
-                    rtol = 0.01,
+                    rtol = 0.01
                 )
 
                 println("    ✓ LIML reasonably matches Python linearmodels")
@@ -315,12 +315,12 @@ const ATOL = 1e-6
                 @test isapprox_results(
                     j_fuller_unadj.beta[1],
                     fuller_results["fuller_unadj_beta"],
-                    rtol = 0.01,
+                    rtol = 0.01
                 )
                 @test isapprox_results(
                     j_fuller_robust.beta[1],
                     fuller_results["fuller_robust_beta"],
-                    rtol = 0.01,
+                    rtol = 0.01
                 )
 
                 println("    ✓ Fuller reasonably matches Python linearmodels")
@@ -344,7 +344,7 @@ const ATOL = 1e-6
             n = n,
             ρ = 0.3,
             R2 = 0.15,
-            β0 = 1.0,
+            β0 = 1.0
         )
         y, x, Z = data.y, data.x, data.z
         X_exog = randn(rng, n, p_exog)
@@ -357,8 +357,7 @@ const ATOL = 1e-6
             liml_time = median(liml_bench.times) / 1e6  # Convert to milliseconds
 
             # Benchmark Fuller
-            fuller_bench =
-                @benchmark fuller($y, $x, $Z, $X_exog, vcov = :HC0, a = 1.0) samples=5 evals=1
+            fuller_bench = @benchmark fuller($y, $x, $Z, $X_exog, vcov = :HC0, a = 1.0) samples=5 evals=1
             fuller_time = median(fuller_bench.times) / 1e6
 
             # Benchmark 2SLS

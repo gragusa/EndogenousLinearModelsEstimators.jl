@@ -56,5 +56,4 @@ export liml, fuller, tsls
 # Export accessor functions
 export coef, vcov, stderror, residuals, dof
 
-
 end # module

@@ -16,9 +16,10 @@ using Statistics
 Convert matrix input to vector if it's n×1, otherwise return as-is.
 """
 _asvec(u::AbstractVector) = u
-_asvec(u::AbstractMatrix) =
+function _asvec(u::AbstractMatrix)
     size(u, 2) == 1 ? vec(u) :
     throw(ArgumentError("Expected a vector or n×1 matrix, got $(size(u))"))
+end
 
 """
     _qr_resid(A, B)
@@ -41,9 +42,9 @@ Prepare exogenous matrix X. If X is nothing or empty, returns intercept only (if
 If add_intercept=true, prepends a column of ones to X.
 """
 function _prep_X(
-    n::Int;
-    X::Union{Nothing,AbstractMatrix} = nothing,
-    add_intercept::Bool = true,
+        n::Int;
+        X::Union{Nothing, AbstractMatrix} = nothing,
+        add_intercept::Bool = true
 )
     if X === nothing || size(X, 2) == 0
         return add_intercept ? ones(n, 1) : zeros(n, 0)
@@ -66,10 +67,10 @@ Compute LIML kappa using generalized symmetric eigenproblem.
 Stable implementation avoiding explicit matrix inverse.
 """
 function _liml_kappa(
-    y::AbstractVector,
-    d::AbstractVector,
-    Z::AbstractMatrix;
-    X::AbstractMatrix,
+        y::AbstractVector,
+        d::AbstractVector,
+        Z::AbstractMatrix;
+        X::AbstractMatrix
 )
     # adj variables: residualize on X (mirrors R ivmodel$Yadj, $Dadj, $Zadj)
     Yadj = _qr_resid(X, y)
@@ -110,11 +111,11 @@ Core K-class fitting routine. Returns (θ, u, A, invA, Adj) where:
 - Adj: W - k W_res (adjustment matrix for variance calculation)
 """
 function _kclass_fit(
-    y::AbstractVector,
-    d::AbstractVector,
-    Z::AbstractMatrix;
-    X::AbstractMatrix,
-    k::Real,
+        y::AbstractVector,
+        d::AbstractVector,
+        Z::AbstractMatrix;
+        X::AbstractMatrix,
+        k::Real
 )
     ZX = hcat(Z, X)                  # n×(L+p)
     W = hcat(d, X)                   # n×(1+p)
@@ -137,12 +138,12 @@ Compute variance-covariance matrix for K-class estimate.
 vcov_mode ∈ (:homoskedastic, :HC0, :HC1)
 """
 function _kclass_vcov(
-    invA::AbstractMatrix,
-    u::AbstractVector,
-    Adj::AbstractMatrix;
-    vcov_mode::Symbol,
-    df::Int,
-    n::Int,
+        invA::AbstractMatrix,
+        u::AbstractVector,
+        Adj::AbstractMatrix;
+        vcov_mode::Symbol,
+        df::Int,
+        n::Int
 )
     if vcov_mode == :homoskedastic
         σ2 = sum(abs2, u) / df
@@ -173,7 +174,8 @@ end
 
 Validate input dimensions and types.
 """
-function _validate_inputs(y::AbstractVector, x::AbstractVecOrMat, Z::AbstractMatrix; X::Union{Nothing,AbstractMatrix}=nothing)
+function _validate_inputs(y::AbstractVector, x::AbstractVecOrMat, Z::AbstractMatrix;
+        X::Union{Nothing, AbstractMatrix} = nothing)
     n = length(y)
 
     # Check basic dimensions
@@ -214,12 +216,12 @@ y = x*β0 + ε ;  x = Z*γ + u
 Returns (y::Vector, x::Vector, Z::Matrix).
 """
 function simulate_iv(
-    rng = Random.default_rng();
-    n::Int,
-    K::Int = 1,
-    R2::Float64 = 0.1,
-    ρ::Float64 = 0.1,
-    β0::Float64 = 0.0,
+        rng = Random.default_rng();
+        n::Int,
+        K::Int = 1,
+        R2::Float64 = 0.1,
+        ρ::Float64 = 0.1,
+        β0::Float64 = 0.0
 )
     @assert -0.999 ≤ ρ ≤ 0.999 "ρ must be in [-0.999, 0.999] for a valid covariance."
     γ = _gamma_vector(K, R2)
