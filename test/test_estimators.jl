@@ -142,6 +142,8 @@ using Printf
         # Test with exogenous variables
         exogenous = randn(rng, n, 2)
         result_exog = tsls(outcome, endogenous, instruments, exogenous)
+        X_exog = randn(rng, n, 2)
+        result_exog = iv_2sls(y, x, Z, X_exog)
         @test length(result_exog.beta) == 4  # endogenous + 2 exogenous + intercept
         @test result_exog.nexogenous == 3
     end

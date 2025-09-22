@@ -8,6 +8,7 @@ using Printf
 import StatsModels
 
 """
+
     EndogenousLinearModelsEstimationResults{V, M}
 
 Unified result structure for all endogenous linear model estimators (LIML, Fuller, 2SLS).
@@ -40,6 +41,7 @@ Unified result structure for all endogenous linear model estimators (LIML, Fulle
 - `residuals(result)` - Extract residuals
 - `dof(result)` - Extract degrees of freedom
 """
+
 struct EndogenousLinearModelsEstimationResults{V,M}
     beta::V
     vcov::M
@@ -54,6 +56,7 @@ struct EndogenousLinearModelsEstimationResults{V,M}
     ninstruments::Int
     nexogenous::Int
 end
+
 
 # Convenience constructor
 function EndogenousLinearModelsEstimationResults(
@@ -77,7 +80,7 @@ function EndogenousLinearModelsEstimationResults(
         residuals,
         df,
         estimator,
-        kappa,
+        kappa_converted,
         vcov_type,
         n,
         nparams,

@@ -5,6 +5,7 @@ Unified implementations of LIML, Fuller, and 2SLS estimators with consistent API
 """
 
 """
+
     liml(y, X, Z, W; vcov=:HC0, weights=nothing, add_intercept=true)
     liml(y, X, Z; vcov=:HC0, weights=nothing, add_intercept=true)
 
@@ -31,6 +32,7 @@ p = number of exogenous variables (including intercept if add_intercept=true).
 ## New API (recommended)
 ```julia
 # With exogenous variables
+
 liml(y, X, Z, W; vcov=:HC0)
 
 # Without exogenous variables
@@ -87,6 +89,7 @@ end
 # This avoids method ambiguity while maintaining backward compatibility
 
 """
+
     fuller(y, X, Z, W; a=1.0, vcov=:HC0, weights=nothing, add_intercept=true)
     fuller(y, X, Z; a=1.0, vcov=:HC0, weights=nothing, add_intercept=true)
 
@@ -114,6 +117,7 @@ When a=0, reduces to LIML estimator.
 ## New API (recommended)
 ```julia
 # With exogenous variables
+
 fuller(y, X, Z, W; a=1.0, vcov=:HC0)
 
 # Without exogenous variables
@@ -175,6 +179,7 @@ end
 # Legacy Fuller methods handled similarly
 
 """
+
     tsls(y, X, Z, W; vcov=:HC0, weights=nothing, add_intercept=true)
     tsls(y, X, Z; vcov=:HC0, weights=nothing, add_intercept=true)
 
@@ -201,6 +206,7 @@ For multiple endogenous regressors, X includes all regressors (endogenous + exog
 ## New API (recommended)
 ```julia
 # With exogenous variables
+
 tsls(y, X, Z, W; vcov=:HC0)
 
 # Without exogenous variables
@@ -322,5 +328,3 @@ function tsls(
         nexogenous = size(Wmat, 2),
     )
 end
-
-# Legacy 2SLS methods handled similarly
