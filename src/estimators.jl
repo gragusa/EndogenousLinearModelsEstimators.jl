@@ -5,8 +5,8 @@ Unified implementations of LIML, Fuller, and 2SLS estimators with consistent API
 """
 
 """
-    iv_liml(y, X, Z, W; vcov=:HC0, weights=nothing, add_intercept=true)
-    iv_liml(y, X, Z; vcov=:HC0, weights=nothing, add_intercept=true)
+    liml(y, X, Z, W; vcov=:HC0, weights=nothing, add_intercept=true)
+    liml(y, X, Z; vcov=:HC0, weights=nothing, add_intercept=true)
 
 Limited Information Maximum Likelihood (LIML) estimator for endogenous linear models.
 
@@ -31,13 +31,13 @@ p = number of exogenous variables (including intercept if add_intercept=true).
 ## New API (recommended)
 ```julia
 # With exogenous variables
-iv_liml(y, X, Z, W; vcov=:HC0)
+liml(y, X, Z, W; vcov=:HC0)
 
 # Without exogenous variables
-iv_liml(y, X, Z; vcov=:HC0)
+liml(y, X, Z; vcov=:HC0)
 ```
 """
-function iv_liml(
+function liml(
     y::AbstractVector,
     X::AbstractVecOrMat,
     Z::AbstractMatrix,
@@ -84,8 +84,8 @@ function iv_liml(
 end
 
 """
-    iv_fuller(y, X, Z, W; a=1.0, vcov=:HC0, weights=nothing, add_intercept=true)
-    iv_fuller(y, X, Z; a=1.0, vcov=:HC0, weights=nothing, add_intercept=true)
+    fuller(y, X, Z, W; a=1.0, vcov=:HC0, weights=nothing, add_intercept=true)
+    fuller(y, X, Z; a=1.0, vcov=:HC0, weights=nothing, add_intercept=true)
 
 Fuller bias-corrected estimator for endogenous linear models.
 
@@ -111,13 +111,13 @@ When a=0, reduces to LIML estimator.
 ## New API (recommended)
 ```julia
 # With exogenous variables
-iv_fuller(y, X, Z, W; a=1.0, vcov=:HC0)
+fuller(y, X, Z, W; a=1.0, vcov=:HC0)
 
 # Without exogenous variables
-iv_fuller(y, X, Z; a=1.0, vcov=:HC0)
+fuller(y, X, Z; a=1.0, vcov=:HC0)
 ```
 """
-function iv_fuller(
+function fuller(
     y::AbstractVector,
     X::AbstractVecOrMat,
     Z::AbstractMatrix,
@@ -170,8 +170,8 @@ function iv_fuller(
 end
 
 """
-    iv_2sls(y, X, Z, W; vcov=:HC0, weights=nothing, add_intercept=true)
-    iv_2sls(y, X, Z; vcov=:HC0, weights=nothing, add_intercept=true)
+    tsls(y, X, Z, W; vcov=:HC0, weights=nothing, add_intercept=true)
+    tsls(y, X, Z; vcov=:HC0, weights=nothing, add_intercept=true)
 
 Two-Stage Least Squares (2SLS) estimator for endogenous linear models.
 
@@ -196,13 +196,13 @@ For multiple endogenous regressors, X includes all regressors (endogenous + exog
 ## New API (recommended)
 ```julia
 # With exogenous variables
-iv_2sls(y, X, Z, W; vcov=:HC0)
+tsls(y, X, Z, W; vcov=:HC0)
 
 # Without exogenous variables
-iv_2sls(y, X, Z; vcov=:HC0)
+tsls(y, X, Z; vcov=:HC0)
 ```
 """
-function iv_2sls(
+function tsls(
     y::AbstractVector,
     X::AbstractVecOrMat,
     Z::AbstractMatrix,
