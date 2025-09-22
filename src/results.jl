@@ -5,6 +5,7 @@ Defines the unified result structure for all endogenous linear model estimators.
 """
 
 using Printf
+import StatsModels
 
 """
 
@@ -95,7 +96,7 @@ end
 
 Extract coefficient estimates.
 """
-coef(result::EndogenousLinearModelsEstimationResults) = result.beta
+StatsModels.coef(result::EndogenousLinearModelsEstimationResults) = result.beta
 
 """
     stderr(result::EndogenousLinearModelsEstimationResults)
@@ -109,21 +110,21 @@ Base.stderr(result::EndogenousLinearModelsEstimationResults) = result.stderr
 
 Extract variance-covariance matrix.
 """
-vcov(result::EndogenousLinearModelsEstimationResults) = result.vcov
+StatsModels.vcov(result::EndogenousLinearModelsEstimationResults) = result.vcov
 
 """
     residuals(result::EndogenousLinearModelsEstimationResults)
 
 Extract model residuals.
 """
-residuals(result::EndogenousLinearModelsEstimationResults) = result.residuals
+StatsModels.residuals(result::EndogenousLinearModelsEstimationResults) = result.residuals
 
 """
     dof(result::EndogenousLinearModelsEstimationResults)
 
 Extract degrees of freedom.
 """
-dof(result::EndogenousLinearModelsEstimationResults) = result.df
+StatsModels.dof(result::EndogenousLinearModelsEstimationResults) = result.df
 
 # Pretty printing
 function Base.show(io::IO, result::EndogenousLinearModelsEstimationResults)
