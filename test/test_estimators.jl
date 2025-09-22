@@ -300,6 +300,4 @@ using EndogenousLinearModelsEstimators: simulate_iv
         @test all(eigvals(result_fuller.vcov) .>= -1e-10)
         @test all(eigvals(result_tsls.vcov) .>= -1e-10)
     end
-
-
 end
