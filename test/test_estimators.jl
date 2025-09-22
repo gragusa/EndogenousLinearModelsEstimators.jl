@@ -301,5 +301,5 @@ using EndogenousLinearModelsEstimators: simulate_iv
         @test all(eigvals(result_tsls.vcov) .>= -1e-10)
     end
 
-    println("  ✅ All basic estimator tests passed!")
+
 end

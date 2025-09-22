@@ -5,7 +5,9 @@ Runs comprehensive test suite including:
 - Basic functionality tests
 - Exogenous variable support tests
 - Cross-platform validation tests (R/Python)
-- Benchmarking tests
+
+Note: Performance benchmarks are now standalone.
+Run them manually with: julia benchmark/run_benchmarks.jl
 """
 
 using Test
@@ -19,4 +21,5 @@ using EndogenousLinearModelsEstimators
 # Include individual test files
 include("test_estimators.jl")
 include("test_ivmodel_reference.jl")
-include("test_benchmarks.jl")
+# Benchmarks are now standalone - run manually with benchmark/run_benchmarks.jl
+# include("test_benchmarks.jl")
