@@ -26,8 +26,8 @@ Limited Information Maximum Likelihood (LIML) estimator for endogenous linear mo
 `EndogenousLinearModelsEstimationResults{T}` with LIML estimates and diagnostics, where T is inferred from input types.
 
 ## Notes
-Uses corrected degrees of freedom: df = n - L - p where L = number of instruments,
-p = number of exogenous variables (including intercept if add_intercept=true).
+Residual degrees of freedom follow the K-class convention: `df = n - (1 + p)` where
+`p` counts exogenous columns (including the intercept when `add_intercept=true`).
 
 ## New API (recommended)
 ```julia
@@ -50,19 +50,22 @@ function liml(
 )
     # Input validation
     _check_weights(weights)
-    n, x_vec, L, p_exog = _validate_inputs(y, X, Z; X=W)
+    n, x_vec, L, p_exog = _validate_inputs(y, X, Z; X = W)
 
     # Prepare exogenous matrix
-    Wmat = _prep_X(n; X=W, add_intercept=add_intercept)
+    Wmat = _prep_X(n; X = W, add_intercept = add_intercept)
     p = size(Wmat, 2)  # Total exogenous parameters (including intercept)
 
-    # Corrected degrees of freedom: n - L - p
-    df = n - L - p
+    # Residual degrees of freedom: subtract endogenous + exogenous parameters
+    df = n - (p + 1)
+    if df <= 0
+        throw(ArgumentError("Model is underidentified: residual degrees of freedom ≤ 0"))
+    end
 
     # LIML estimation
-    κ = _liml_kappa(y, x_vec, Z; X=Wmat)
-    θ, u, A, invA, Adj = _kclass_fit(y, x_vec, Z; X=Wmat, k=κ)
-    V = _kclass_vcov(invA, u, Adj; vcov_mode=vcov, df=df, n=n)
+    κ = _liml_kappa(y, x_vec, Z; X = Wmat)
+    θ, u, A, invA, Adj = _kclass_fit(y, x_vec, Z; X = Wmat, k = κ)
+    V = _kclass_vcov(invA, u, Adj; vcov_mode = vcov, df = df, n = n)
 
     # Extract coefficients and compute standard errors
     beta = θ
@@ -81,7 +84,7 @@ function liml(
         n = n,
         nparams = length(beta),
         ninstruments = L,
-        nexogenous = p
+        nexogenous = p,
     )
 end
 
@@ -136,24 +139,31 @@ function fuller(
 )
     # Input validation
     _check_weights(weights)
-    n, x_vec, L, p_exog = _validate_inputs(y, X, Z; X=W)
+    n, x_vec, L, p_exog = _validate_inputs(y, X, Z; X = W)
 
     # Prepare exogenous matrix
-    Wmat = _prep_X(n; X=W, add_intercept=add_intercept)
+    Wmat = _prep_X(n; X = W, add_intercept = add_intercept)
     p = size(Wmat, 2)  # Total exogenous parameters (including intercept)
 
-    # Corrected degrees of freedom: n - L - p
-    df = n - L - p
+    # Residual degrees of freedom for variance (n minus endogenous and exogenous params)
+    resid_df = n - (p + 1)
+    if resid_df <= 0
+        throw(ArgumentError("Model is underidentified: residual degrees of freedom ≤ 0"))
+    end
 
     # First compute LIML kappa
-    κ_liml = _liml_kappa(y, x_vec, Z; X=Wmat)
+    κ_liml = _liml_kappa(y, x_vec, Z; X = Wmat)
 
-    # Fuller correction: κ_Fuller = κ_LIML - a/df
-    κ_fuller = κ_liml - a / df
+    # Fuller adjustment uses instrument-based denominator (n - L - p)
+    adj_df = n - L - p
+    if adj_df <= 0
+        throw(ArgumentError("Fuller adjustment undefined: n - L - p must be positive"))
+    end
+    κ_fuller = κ_liml - a / adj_df
 
     # Fuller estimation
-    θ, u, A, invA, Adj = _kclass_fit(y, x_vec, Z; X=Wmat, k=κ_fuller)
-    V = _kclass_vcov(invA, u, Adj; vcov_mode=vcov, df=df, n=n)
+    θ, u, A, invA, Adj = _kclass_fit(y, x_vec, Z; X = Wmat, k = κ_fuller)
+    V = _kclass_vcov(invA, u, Adj; vcov_mode = vcov, df = resid_df, n = n)
 
     # Extract coefficients and compute standard errors
     beta = θ
@@ -165,14 +175,14 @@ function fuller(
         V,
         stderr_vec,
         u,
-        df,
+        resid_df,
         "Fuller";
         kappa = κ_fuller,
         vcov_type = vcov,
         n = n,
         nparams = length(beta),
         ninstruments = L,
-        nexogenous = p
+        nexogenous = p,
     )
 end
 
@@ -224,10 +234,10 @@ function tsls(
 )
     # Input validation
     _check_weights(weights)
-    n, x_vec, L, p_exog = _validate_inputs(y, X, Z; X=W)
+    n, x_vec, L, p_exog = _validate_inputs(y, X, Z; X = W)
 
     # Prepare exogenous matrix
-    Wmat = _prep_X(n; X=W, add_intercept=add_intercept)
+    Wmat = _prep_X(n; X = W, add_intercept = add_intercept)
 
     # For 2SLS, combine endogenous and exogenous regressors
     if size(Wmat, 2) == 0
@@ -325,7 +335,7 @@ function tsls(
         n = n,
         nparams = length(beta_unified),
         ninstruments = L,  # Original instrument count
-        nexogenous = size(Wmat, 2)
+        nexogenous = size(Wmat, 2),
     )
 end
 

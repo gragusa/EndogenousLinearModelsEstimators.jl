@@ -1,11 +1,11 @@
 """
-Cross-platform validation tests against R and Python implementations
+Validation tests against R and Python implementations
 
 Tests the package estimators against gold-standard implementations:
 - R: ivmodel package (LIML, Fuller)
 - Python: linearmodels package (IVLIML)
 
-Also includes benchmarking capabilities.
+Only to be run locally and requires R and Python with the relevant packages installed.
 """
 
 using Test

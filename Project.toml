@@ -12,12 +12,13 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-RCall = "6f49c342-dc21-5d91-9882-a32aef131414"
-PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+PkgBenchmark = "32113eaa-f34f-5b0d-bd6e-46f633d2ed5a"
 
 [targets]
-test = ["Test", "RCall", "PyCall", "BenchmarkTools"]
+test = ["Test", "BenchmarkTools", "CSV", "DataFrames", "PkgBenchmark"]
 
 [compat]
 julia = "1.6"
