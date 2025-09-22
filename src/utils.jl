@@ -173,7 +173,12 @@ end
 
 Validate input dimensions and types.
 """
-function _validate_inputs(y::AbstractVector, x::AbstractVecOrMat, Z::AbstractMatrix; X::Union{Nothing,AbstractMatrix}=nothing)
+function _validate_inputs(
+    y::AbstractVector,
+    x::AbstractVecOrMat,
+    Z::AbstractMatrix;
+    X::Union{Nothing,AbstractMatrix} = nothing,
+)
     n = length(y)
 
     # Check basic dimensions

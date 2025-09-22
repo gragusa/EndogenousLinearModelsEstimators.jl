@@ -40,7 +40,7 @@ Unified result structure for all endogenous linear model estimators (LIML, Fulle
 - `residuals(result)` - Extract residuals
 - `dof(result)` - Extract degrees of freedom
 """
-struct EndogenousLinearModelsEstimationResults{V, M}
+struct EndogenousLinearModelsEstimationResults{V,M}
     beta::V
     vcov::M
     stderr::V
@@ -68,9 +68,9 @@ function EndogenousLinearModelsEstimationResults(
     n::Int,
     nparams::Int,
     ninstruments::Int,
-    nexogenous::Int
-) where {V, M}
-    return EndogenousLinearModelsEstimationResults{V, M}(
+    nexogenous::Int,
+) where {V,M}
+    return EndogenousLinearModelsEstimationResults{V,M}(
         beta,
         vcov,
         stderr,
@@ -82,7 +82,7 @@ function EndogenousLinearModelsEstimationResults(
         n,
         nparams,
         ninstruments,
-        nexogenous
+        nexogenous,
     )
 end
 
@@ -151,15 +151,24 @@ function Base.show(io::IO, result::EndogenousLinearModelsEstimationResults)
             end
         end
 
-        @printf(io, "%-12s %10.6f  %10.6f  %8.3f\n",
-                param_name, result.beta[i], result.stderr[i],
-                result.beta[i] / result.stderr[i])
+        @printf(
+            io,
+            "%-12s %10.6f  %10.6f  %8.3f\n",
+            param_name,
+            result.beta[i],
+            result.stderr[i],
+            result.beta[i] / result.stderr[i]
+        )
     end
 
     println(io, "")
     println(io, "Note: Last column shows t-statistics")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", result::EndogenousLinearModelsEstimationResults)
+function Base.show(
+    io::IO,
+    ::MIME"text/plain",
+    result::EndogenousLinearModelsEstimationResults,
+)
     show(io, result)
 end

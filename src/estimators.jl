@@ -48,19 +48,19 @@ function liml(
 )
     # Input validation
     _check_weights(weights)
-    n, x_vec, L, p_exog = _validate_inputs(y, X, Z; X=W)
+    n, x_vec, L, p_exog = _validate_inputs(y, X, Z; X = W)
 
     # Prepare exogenous matrix
-    Wmat = _prep_X(n; X=W, add_intercept=add_intercept)
+    Wmat = _prep_X(n; X = W, add_intercept = add_intercept)
     p = size(Wmat, 2)  # Total exogenous parameters (including intercept)
 
     # Corrected degrees of freedom: n - L - p
     df = n - L - p
 
     # LIML estimation
-    κ = _liml_kappa(y, x_vec, Z; X=Wmat)
-    θ, u, A, invA, Adj = _kclass_fit(y, x_vec, Z; X=Wmat, k=κ)
-    V = _kclass_vcov(invA, u, Adj; vcov_mode=vcov, df=df, n=n)
+    κ = _liml_kappa(y, x_vec, Z; X = Wmat)
+    θ, u, A, invA, Adj = _kclass_fit(y, x_vec, Z; X = Wmat, k = κ)
+    V = _kclass_vcov(invA, u, Adj; vcov_mode = vcov, df = df, n = n)
 
     # Extract coefficients and compute standard errors
     beta = θ
@@ -79,7 +79,7 @@ function liml(
         n = n,
         nparams = length(beta),
         ninstruments = L,
-        nexogenous = p
+        nexogenous = p,
     )
 end
 
@@ -132,24 +132,24 @@ function fuller(
 )
     # Input validation
     _check_weights(weights)
-    n, x_vec, L, p_exog = _validate_inputs(y, X, Z; X=W)
+    n, x_vec, L, p_exog = _validate_inputs(y, X, Z; X = W)
 
     # Prepare exogenous matrix
-    Wmat = _prep_X(n; X=W, add_intercept=add_intercept)
+    Wmat = _prep_X(n; X = W, add_intercept = add_intercept)
     p = size(Wmat, 2)  # Total exogenous parameters (including intercept)
 
     # Corrected degrees of freedom: n - L - p
     df = n - L - p
 
     # First compute LIML kappa
-    κ_liml = _liml_kappa(y, x_vec, Z; X=Wmat)
+    κ_liml = _liml_kappa(y, x_vec, Z; X = Wmat)
 
     # Fuller correction: κ_Fuller = κ_LIML - a/df
     κ_fuller = κ_liml - a / df
 
     # Fuller estimation
-    θ, u, A, invA, Adj = _kclass_fit(y, x_vec, Z; X=Wmat, k=κ_fuller)
-    V = _kclass_vcov(invA, u, Adj; vcov_mode=vcov, df=df, n=n)
+    θ, u, A, invA, Adj = _kclass_fit(y, x_vec, Z; X = Wmat, k = κ_fuller)
+    V = _kclass_vcov(invA, u, Adj; vcov_mode = vcov, df = df, n = n)
 
     # Extract coefficients and compute standard errors
     beta = θ
@@ -168,7 +168,7 @@ function fuller(
         n = n,
         nparams = length(beta),
         ninstruments = L,
-        nexogenous = p
+        nexogenous = p,
     )
 end
 
@@ -218,10 +218,10 @@ function tsls(
 )
     # Input validation
     _check_weights(weights)
-    n, x_vec, L, p_exog = _validate_inputs(y, X, Z; X=W)
+    n, x_vec, L, p_exog = _validate_inputs(y, X, Z; X = W)
 
     # Prepare exogenous matrix
-    Wmat = _prep_X(n; X=W, add_intercept=add_intercept)
+    Wmat = _prep_X(n; X = W, add_intercept = add_intercept)
 
     # For 2SLS, combine endogenous and exogenous regressors
     if size(Wmat, 2) == 0
@@ -245,7 +245,11 @@ function tsls(
 
     # Check identification: need at least as many instruments as regressors
     if L_full < k
-        throw(ArgumentError("Model is underidentified: need at least $k instruments, got $L_full"))
+        throw(
+            ArgumentError(
+                "Model is underidentified: need at least $k instruments, got $L_full",
+            ),
+        )
     end
 
     # 2SLS estimation using efficient implementation (avoid forming projection matrix)
@@ -315,7 +319,7 @@ function tsls(
         n = n,
         nparams = length(beta_unified),
         ninstruments = L,  # Original instrument count
-        nexogenous = size(Wmat, 2)
+        nexogenous = size(Wmat, 2),
     )
 end
 
