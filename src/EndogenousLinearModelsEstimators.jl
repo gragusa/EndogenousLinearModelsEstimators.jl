@@ -20,12 +20,12 @@ All estimators support:
 using EndogenousLinearModelsEstimators
 
 # Basic usage
-result_liml = iv_liml(y, x, Z)
-result_fuller = iv_fuller(y, x, Z; a=1.0)
-result_2sls = iv_2sls(y, x, Z)
+result_liml = liml(y, x, Z)
+result_fuller = fuller(y, x, Z; a=1.0)
+result_tsls = tsls(y, x, Z)
 
 # With exogenous variables
-result = iv_liml(y, x, Z; X=exog_vars, vcov=:HC0)
+result = liml(y, x, Z, exog_vars; vcov=:HC0)
 
 # Results provide unified interface
 result.beta          # Coefficient estimates
@@ -39,6 +39,7 @@ module EndogenousLinearModelsEstimators
 
 using LinearAlgebra
 using Statistics
+using StatsModels: coef, vcov, residuals, dof
 
 # Include submodules
 include("results.jl")
@@ -49,12 +50,6 @@ include("estimators.jl")
 export EndogenousLinearModelsEstimationResults
 
 # Export main functions
-export iv_liml, iv_fuller, iv_2sls
-
-# Export accessor functions
-export coef, vcov, residuals, dof
-
-# Export utility functions for advanced users
-export simulate_iv
+export liml, fuller, tsls
 
 end # module
