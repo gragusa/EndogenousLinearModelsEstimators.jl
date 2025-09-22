@@ -39,7 +39,7 @@ module EndogenousLinearModelsEstimators
 
 using LinearAlgebra
 using Statistics
-using StatsModels: coef, vcov, residuals, dof
+using StatsBase: coef, stderror, vcov, residuals, dof
 
 # Include submodules
 include("results.jl")

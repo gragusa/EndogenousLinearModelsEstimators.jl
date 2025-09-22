@@ -20,15 +20,15 @@ using EndogenousLinearModelsEstimators
 include("test_estimators.jl")
 include("test_cross_platform.jl")
 
-@testset "EndogenousLinearModelsEstimators.jl" begin
-    println("🧪 Running comprehensive test suite for EndogenousLinearModelsEstimators.jl")
-    println("=" * "="^80)
+# @testset "EndogenousLinearModelsEstimators.jl" begin
+#     println("🧪 Running comprehensive test suite for EndogenousLinearModelsEstimators.jl")
+#     println("=" * "="^80)
 
-    # Run basic estimator tests
-    include("test_estimators.jl")
+#     # Run basic estimator tests
+#     include("test_estimators.jl")
 
-    # Run cross-platform validation tests
-    include("test_cross_platform.jl")
+#     # Run cross-platform validation tests
+#     include("test_cross_platform.jl")
 
-    println("\n🎉 All tests completed successfully!")
-end
+#     println("\n🎉 All tests completed successfully!")
+# end

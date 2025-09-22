@@ -104,7 +104,7 @@ result.n             # Sample size
 
 ```julia
 coef(result)         # coefficients
-stderr(result)       # standard errors
+stderror(result)       # standard errors
 vcov(result)         # variance-covariance matrix
 residuals(result)    # residuals
 dof(result)          # degrees of freedom

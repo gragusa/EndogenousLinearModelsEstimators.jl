@@ -253,7 +253,7 @@ using EndogenousLinearModelsEstimators: simulate_iv
 
         # Test accessor methods
         @test coef(result) == result.beta
-        @test StatsModels.stderror(result) == result.stderr
+        @test stderror(result) == result.stderr
         @test vcov(result) == result.vcov
         @test residuals(result) == result.residuals
         @test dof(result) == result.df

@@ -36,7 +36,7 @@ Unified result structure for all endogenous linear model estimators (LIML, Fulle
 
 - `show(io, result)` - Pretty printing
 - `coef(result)` - Extract coefficients (alias for `beta`)
-- `stderr(result)` - Extract standard errors
+- `stderror(result)` - Extract standard errors
 - `vcov(result)` - Extract variance-covariance matrix
 - `residuals(result)` - Extract residuals
 - `dof(result)` - Extract degrees of freedom
@@ -98,7 +98,7 @@ Extract coefficient estimates.
 StatsBase.coef(result::EndogenousLinearModelsEstimationResults) = result.beta
 
 """
-    stderr(result::EndogenousLinearModelsEstimationResults)
+    stderror(result::EndogenousLinearModelsEstimationResults)
 
 Extract standard errors.
 """
