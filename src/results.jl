@@ -5,7 +5,7 @@ Defines the unified result structure for all endogenous linear model estimators.
 """
 
 using Printf
-import StatsModels
+using StatsBase
 
 """
 
@@ -42,7 +42,7 @@ Unified result structure for all endogenous linear model estimators (LIML, Fulle
 - `dof(result)` - Extract degrees of freedom
 """
 
-struct EndogenousLinearModelsEstimationResults{V, M}
+struct EndogenousLinearModelsEstimationResults{V,M}
     beta::V
     vcov::M
     stderr::V
@@ -71,22 +71,21 @@ function EndogenousLinearModelsEstimationResults(
     n::Int,
     nparams::Int,
     ninstruments::Int,
-    nexogenous::Int
-
-) where {V, M}
-    return EndogenousLinearModelsEstimationResults{V, M}(
+    nexogenous::Int,
+) where {V,M}
+    return EndogenousLinearModelsEstimationResults{V,M}(
         beta,
         vcov,
         stderr,
         residuals,
         df,
         estimator,
-        kappa_converted,
+        kappa,
         vcov_type,
         n,
         nparams,
         ninstruments,
-        nexogenous
+        nexogenous,
     )
 end
 
@@ -96,35 +95,35 @@ end
 
 Extract coefficient estimates.
 """
-StatsModels.coef(result::EndogenousLinearModelsEstimationResults) = result.beta
+StatsBase.coef(result::EndogenousLinearModelsEstimationResults) = result.beta
 
 """
     stderr(result::EndogenousLinearModelsEstimationResults)
 
 Extract standard errors.
 """
-Base.stderr(result::EndogenousLinearModelsEstimationResults) = result.stderr
+StatsBase.stderror(result::EndogenousLinearModelsEstimationResults) = result.stderr
 
 """
     vcov(result::EndogenousLinearModelsEstimationResults)
 
 Extract variance-covariance matrix.
 """
-StatsModels.vcov(result::EndogenousLinearModelsEstimationResults) = result.vcov
+StatsBase.vcov(result::EndogenousLinearModelsEstimationResults) = result.vcov
 
 """
     residuals(result::EndogenousLinearModelsEstimationResults)
 
 Extract model residuals.
 """
-StatsModels.residuals(result::EndogenousLinearModelsEstimationResults) = result.residuals
+StatsBase.residuals(result::EndogenousLinearModelsEstimationResults) = result.residuals
 
 """
     dof(result::EndogenousLinearModelsEstimationResults)
 
 Extract degrees of freedom.
 """
-StatsModels.dof(result::EndogenousLinearModelsEstimationResults) = result.df
+StatsBase.dof(result::EndogenousLinearModelsEstimationResults) = result.df
 
 # Pretty printing
 function Base.show(io::IO, result::EndogenousLinearModelsEstimationResults)
@@ -155,15 +154,24 @@ function Base.show(io::IO, result::EndogenousLinearModelsEstimationResults)
             end
         end
 
-        @printf(io, "%-12s %10.6f  %10.6f  %8.3f\n",
-                param_name, result.beta[i], result.stderr[i],
-                result.beta[i] / result.stderr[i])
+        @printf(
+            io,
+            "%-12s %10.6f  %10.6f  %8.3f\n",
+            param_name,
+            result.beta[i],
+            result.stderr[i],
+            result.beta[i] / result.stderr[i]
+        )
     end
 
     println(io, "")
     println(io, "Note: Last column shows t-statistics")
 end
 
-function Base.show(io::IO, ::MIME"text/plain", result::EndogenousLinearModelsEstimationResults)
+function Base.show(
+    io::IO,
+    ::MIME"text/plain",
+    result::EndogenousLinearModelsEstimationResults,
+)
     show(io, result)
 end

@@ -39,8 +39,8 @@ end
     const RTOL = 1e-4
     const ATOL = 1e-6
 
-    function isapprox_results(a, b; rtol=RTOL, atol=ATOL, verbose=false)
-        match = isapprox(a, b, rtol=rtol, atol=atol)
+    function isapprox_results(a, b; rtol = RTOL, atol = ATOL, verbose = false)
+        match = isapprox(a, b, rtol = rtol, atol = atol)
         if verbose && !match
             @printf("Values don't match: %.8f vs %.8f (diff: %.2e)\\n", a, b, abs(a-b))
         end
@@ -68,13 +68,13 @@ end
 
             # Generate test data
             rng = Random.Xoshiro(787878)
-            data = simulate_iv(rng; K=5, n=20, ρ=0.3, R2=0.2, β0=0.0)
+            data = simulate_iv(rng; K = 5, n = 20, ρ = 0.3, R2 = 0.2, β0 = 0.0)
             y, x, Z = data.y, data.x, data.z
 
             @testset "LIML vs R" begin
                 # Julia LIML
-                j_liml_homo = iv_liml(y, x, Z; vcov=:homoskedastic)
-                j_liml_hetero = iv_liml(y, x, Z; vcov=:HC0)
+                j_liml_homo = iv_liml(y, x, Z; vcov = :homoskedastic)
+                j_liml_hetero = iv_liml(y, x, Z; vcov = :HC0)
 
                 # Pass data to R and compute results
                 @rput y x Z
@@ -96,16 +96,24 @@ end
                 @test isapprox_results(j_liml_hetero.kappa, liml_hetero["k"][1])
 
                 # Test standard errors (with slightly more tolerance)
-                @test isapprox_results(j_liml_homo.stderr[1], liml_homo["std_err"][1], rtol=0.01)
-                @test isapprox_results(j_liml_hetero.stderr[1], liml_hetero["std_err"][1], rtol=0.01)
+                @test isapprox_results(
+                    j_liml_homo.stderr[1],
+                    liml_homo["std_err"][1],
+                    rtol = 0.01,
+                )
+                @test isapprox_results(
+                    j_liml_hetero.stderr[1],
+                    liml_hetero["std_err"][1],
+                    rtol = 0.01,
+                )
 
                 println("    ✓ LIML matches R ivmodel")
             end
 
             @testset "Fuller vs R" begin
                 # Julia Fuller
-                j_fuller_homo = iv_fuller(y, x, Z; a=1.0, vcov=:homoskedastic)
-                j_fuller_hetero = iv_fuller(y, x, Z; a=1.0, vcov=:HC0)
+                j_fuller_homo = iv_fuller(y, x, Z; a = 1.0, vcov = :homoskedastic)
+                j_fuller_hetero = iv_fuller(y, x, Z; a = 1.0, vcov = :HC0)
 
                 # R Fuller
                 R"""
@@ -117,15 +125,26 @@ end
 
                 # Test point estimates
                 @test isapprox_results(j_fuller_homo.beta[1], fuller_homo["point_est"][1])
-                @test isapprox_results(j_fuller_hetero.beta[1], fuller_hetero["point_est"][1])
+                @test isapprox_results(
+                    j_fuller_hetero.beta[1],
+                    fuller_hetero["point_est"][1],
+                )
 
                 # Test kappa values
                 @test isapprox_results(j_fuller_homo.kappa, fuller_homo["k"][1])
                 @test isapprox_results(j_fuller_hetero.kappa, fuller_hetero["k"][1])
 
                 # Test standard errors
-                @test isapprox_results(j_fuller_homo.stderr[1], fuller_homo["std_err"][1], rtol=0.01)
-                @test isapprox_results(j_fuller_hetero.stderr[1], fuller_hetero["std_err"][1], rtol=0.01)
+                @test isapprox_results(
+                    j_fuller_homo.stderr[1],
+                    fuller_homo["std_err"][1],
+                    rtol = 0.01,
+                )
+                @test isapprox_results(
+                    j_fuller_hetero.stderr[1],
+                    fuller_hetero["std_err"][1],
+                    rtol = 0.01,
+                )
 
                 println("    ✓ Fuller matches R ivmodel")
             end
@@ -134,12 +153,12 @@ end
                 # Generate larger dataset with exogenous variables
                 rng2 = Random.Xoshiro(12345)
                 n, K, p_exog = 30, 6, 2
-                data2 = simulate_iv(rng2; K=K, n=n, ρ=0.4, R2=0.15, β0=1.0)
+                data2 = simulate_iv(rng2; K = K, n = n, ρ = 0.4, R2 = 0.15, β0 = 1.0)
                 y2, x2, Z2 = data2.y, data2.x, data2.z
                 X2 = randn(rng2, n, p_exog)
 
                 # Julia estimation
-                j_liml_exog = iv_liml(y2, x2, Z2; X=X2, vcov=:HC0)
+                j_liml_exog = iv_liml(y2, x2, Z2; X = X2, vcov = :HC0)
 
                 # R estimation
                 @rput y2 x2 Z2 X2
@@ -192,13 +211,13 @@ end
 
             # Generate test data
             rng = Random.Xoshiro(787878)
-            data = simulate_iv(rng; K=5, n=20, ρ=0.3, R2=0.2, β0=0.0)
+            data = simulate_iv(rng; K = 5, n = 20, ρ = 0.3, R2 = 0.2, β0 = 0.0)
             y, x, Z = data.y, data.x, data.z
 
             @testset "LIML vs Python" begin
                 # Julia LIML
-                j_liml_unadj = iv_liml(y, x, Z; vcov=:homoskedastic)
-                j_liml_robust = iv_liml(y, x, Z; vcov=:HC0)
+                j_liml_unadj = iv_liml(y, x, Z; vcov = :homoskedastic)
+                j_liml_robust = iv_liml(y, x, Z; vcov = :HC0)
 
                 # Convert to Python and run
                 py_y = PyObject(y)
@@ -226,16 +245,24 @@ end
                 results = py"results"
 
                 # Test point estimates (Python may have slightly different numerical precision)
-                @test isapprox_results(j_liml_unadj.beta[1], results["liml_unadj_beta"], rtol=0.01)
-                @test isapprox_results(j_liml_robust.beta[1], results["liml_robust_beta"], rtol=0.01)
+                @test isapprox_results(
+                    j_liml_unadj.beta[1],
+                    results["liml_unadj_beta"],
+                    rtol = 0.01,
+                )
+                @test isapprox_results(
+                    j_liml_robust.beta[1],
+                    results["liml_robust_beta"],
+                    rtol = 0.01,
+                )
 
                 println("    ✓ LIML reasonably matches Python linearmodels")
             end
 
             @testset "Fuller vs Python" begin
                 # Julia Fuller
-                j_fuller_unadj = iv_fuller(y, x, Z; a=1.0, vcov=:homoskedastic)
-                j_fuller_robust = iv_fuller(y, x, Z; a=1.0, vcov=:HC0)
+                j_fuller_unadj = iv_fuller(y, x, Z; a = 1.0, vcov = :homoskedastic)
+                j_fuller_robust = iv_fuller(y, x, Z; a = 1.0, vcov = :HC0)
 
                 # Python Fuller
                 py"""
@@ -253,8 +280,16 @@ end
                 fuller_results = py"fuller_results"
 
                 # Test point estimates
-                @test isapprox_results(j_fuller_unadj.beta[1], fuller_results["fuller_unadj_beta"], rtol=0.01)
-                @test isapprox_results(j_fuller_robust.beta[1], fuller_results["fuller_robust_beta"], rtol=0.01)
+                @test isapprox_results(
+                    j_fuller_unadj.beta[1],
+                    fuller_results["fuller_unadj_beta"],
+                    rtol = 0.01,
+                )
+                @test isapprox_results(
+                    j_fuller_robust.beta[1],
+                    fuller_results["fuller_robust_beta"],
+                    rtol = 0.01,
+                )
 
                 println("    ✓ Fuller reasonably matches Python linearmodels")
             end
@@ -271,7 +306,7 @@ end
         # Generate larger benchmark dataset
         rng = Random.Xoshiro(42)
         n, K, p_exog = 200, 10, 3
-        data = simulate_iv(rng; K=K, n=n, ρ=0.3, R2=0.15, β0=1.0)
+        data = simulate_iv(rng; K = K, n = n, ρ = 0.3, R2 = 0.15, β0 = 1.0)
         y, x, Z = data.y, data.x, data.z
         X_exog = randn(rng, n, p_exog)
 
@@ -279,15 +314,18 @@ end
             println("    📊 Benchmarking Julia implementations...")
 
             # Benchmark LIML
-            liml_bench = @benchmark iv_liml($y, $x, $Z; X=$X_exog, vcov=:HC0) samples=5 evals=1
+            liml_bench =
+                @benchmark iv_liml($y, $x, $Z; X = $X_exog, vcov = :HC0) samples=5 evals=1
             liml_time = median(liml_bench.times) / 1e6  # Convert to milliseconds
 
             # Benchmark Fuller
-            fuller_bench = @benchmark iv_fuller($y, $x, $Z; X=$X_exog, vcov=:HC0, a=1.0) samples=5 evals=1
+            fuller_bench =
+                @benchmark iv_fuller($y, $x, $Z; X = $X_exog, vcov = :HC0, a = 1.0) samples=5 evals=1
             fuller_time = median(fuller_bench.times) / 1e6
 
             # Benchmark 2SLS
-            tsls_bench = @benchmark iv_2sls($y, $x, $Z; X=$X_exog, vcov=:HC0) samples=5 evals=1
+            tsls_bench =
+                @benchmark tsls($y, $x, $Z; X = $X_exog, vcov = :HC0) samples=5 evals=1
             tsls_time = median(tsls_bench.times) / 1e6
 
             @printf("    LIML:   %8.2f ms\\n", liml_time)
