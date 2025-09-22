@@ -23,15 +23,14 @@ using EndogenousLinearModelsEstimators: simulate_iv
         println("  ✓ Testing data generation...")
 
         # Test basic simulation
-        data =
-            EndogenousLinearModelsEstimators.EndogenousLinearModelsEstimators.simulate_iv(
-                rng;
-                n = n,
-                K = K,
-                R2 = R2,
-                ρ = ρ,
-                β0 = β0,
-            )
+        data = EndogenousLinearModelsEstimators.EndogenousLinearModelsEstimators.simulate_iv(
+            rng;
+            n = n,
+            K = K,
+            R2 = R2,
+            ρ = ρ,
+            β0 = β0
+        )
         @test length(data.y) == n
         @test length(data.x) == n
         @test size(data.z) == (n, K)
@@ -43,7 +42,7 @@ using EndogenousLinearModelsEstimators: simulate_iv
             K = 3,
             R2 = 0.1,
             ρ = 0.1,
-            β0 = 0.0,
+            β0 = 0.0
         )
         @test length(data2.y) == 20
         @test size(data2.z) == (20, 3)
@@ -58,7 +57,7 @@ using EndogenousLinearModelsEstimators: simulate_iv
             K = K,
             R2 = R2,
             ρ = ρ,
-            β0 = β0,
+            β0 = β0
         )
         outcome, endogenous, instruments = data.y, data.x, data.z
 
@@ -111,7 +110,7 @@ using EndogenousLinearModelsEstimators: simulate_iv
             K = K,
             R2 = R2,
             ρ = ρ,
-            β0 = β0,
+            β0 = β0
         )
         outcome, endogenous, instruments = data.y, data.x, data.z
 
@@ -154,7 +153,7 @@ using EndogenousLinearModelsEstimators: simulate_iv
             K = K,
             R2 = R2,
             ρ = ρ,
-            β0 = β0,
+            β0 = β0
         )
         outcome, endogenous, instruments = data.y, data.x, data.z
 
@@ -193,7 +192,7 @@ using EndogenousLinearModelsEstimators: simulate_iv
             K = 3,
             R2 = 0.1,
             ρ = 0.1,
-            β0 = 0.0,
+            β0 = 0.0
         )
         outcome, endogenous, instruments = data.y, data.x, data.z
 
@@ -210,19 +209,19 @@ using EndogenousLinearModelsEstimators: simulate_iv
             outcome,
             endogenous,
             instruments;
-            weights = ones(20),
+            weights = ones(20)
         )
         @test_throws ErrorException fuller(
             outcome,
             endogenous,
             instruments;
-            weights = ones(20),
+            weights = ones(20)
         )
         @test_throws ErrorException tsls(
             outcome,
             endogenous,
             instruments;
-            weights = ones(20),
+            weights = ones(20)
         )
 
         # Test underidentification for 2SLS
@@ -245,7 +244,7 @@ using EndogenousLinearModelsEstimators: simulate_iv
             K = 5,
             R2 = 0.1,
             ρ = 0.2,
-            β0 = 1.0,
+            β0 = 1.0
         )
         outcome, endogenous, instruments = data.y, data.x, data.z
 
@@ -277,7 +276,7 @@ using EndogenousLinearModelsEstimators: simulate_iv
             K = 10,
             R2 = 0.5,
             ρ = 0.1,
-            β0 = 1.0,
+            β0 = 1.0
         )
         outcome, endogenous, instruments = data.y, data.x, data.z
 

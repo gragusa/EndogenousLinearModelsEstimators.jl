@@ -10,7 +10,7 @@ const BENCH_SCRIPT = joinpath(PKGDIR, "benchmark", "benchmarks.jl")
         "origin/main";
         script = BENCH_SCRIPT,
         resultdir = mktempdir(),
-        progress = false,
+        progress = false
     )
 
     regressions = if hasproperty(comparison, :regressions)

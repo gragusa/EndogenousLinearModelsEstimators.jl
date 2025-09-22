@@ -15,7 +15,7 @@ const BENCH_DATA = let
         K = N_INSTRUMENTS,
         R2 = 0.2,
         ρ = 0.3,
-        β0 = 1.0,
+        β0 = 1.0
     )
     y = data.y
     x = data.x
@@ -29,7 +29,7 @@ SUITE["liml/HC0"] = @benchmarkable liml(
     $BENCH_DATA.x,
     $BENCH_DATA.Z,
     $BENCH_DATA.W;
-    vcov = :HC0,
+    vcov = :HC0
 ) samples=3 evals=1
 
 SUITE["fuller/HC0"] = @benchmarkable fuller(
@@ -38,7 +38,7 @@ SUITE["fuller/HC0"] = @benchmarkable fuller(
     $BENCH_DATA.Z,
     $BENCH_DATA.W;
     vcov = :HC0,
-    a = 1.0,
+    a = 1.0
 ) samples=3 evals=1
 
 SUITE["tsls/HC0"] = @benchmarkable tsls(
@@ -46,7 +46,7 @@ SUITE["tsls/HC0"] = @benchmarkable tsls(
     $BENCH_DATA.x,
     $BENCH_DATA.Z,
     $BENCH_DATA.W;
-    vcov = :HC0,
+    vcov = :HC0
 ) samples=3 evals=1
 
 SUITE

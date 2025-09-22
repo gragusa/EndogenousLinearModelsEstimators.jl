@@ -40,13 +40,13 @@ liml(y, X, Z; vcov=:HC0)
 ```
 """
 function liml(
-    y::AbstractVector,
-    X::AbstractVecOrMat,
-    Z::AbstractMatrix,
-    W::Union{AbstractMatrix,Nothing} = nothing;
-    vcov::Symbol = :HC0,
-    weights::Union{Nothing,AbstractVector} = nothing,
-    add_intercept::Bool = true,
+        y::AbstractVector,
+        X::AbstractVecOrMat,
+        Z::AbstractMatrix,
+        W::Union{AbstractMatrix, Nothing} = nothing;
+        vcov::Symbol = :HC0,
+        weights::Union{Nothing, AbstractVector} = nothing,
+        add_intercept::Bool = true
 )
     # Input validation
     _check_weights(weights)
@@ -84,7 +84,7 @@ function liml(
         n = n,
         nparams = length(beta),
         ninstruments = L,
-        nexogenous = p,
+        nexogenous = p
     )
 end
 
@@ -128,14 +128,14 @@ fuller(y, X, Z; a=1.0, vcov=:HC0)
 ```
 """
 function fuller(
-    y::AbstractVector,
-    X::AbstractVecOrMat,
-    Z::AbstractMatrix,
-    W::Union{AbstractMatrix,Nothing} = nothing;
-    a::Real = 1.0,
-    vcov::Symbol = :HC0,
-    weights::Union{Nothing,AbstractVector} = nothing,
-    add_intercept::Bool = true,
+        y::AbstractVector,
+        X::AbstractVecOrMat,
+        Z::AbstractMatrix,
+        W::Union{AbstractMatrix, Nothing} = nothing;
+        a::Real = 1.0,
+        vcov::Symbol = :HC0,
+        weights::Union{Nothing, AbstractVector} = nothing,
+        add_intercept::Bool = true
 )
     # Input validation
     _check_weights(weights)
@@ -182,7 +182,7 @@ function fuller(
         n = n,
         nparams = length(beta),
         ninstruments = L,
-        nexogenous = p,
+        nexogenous = p
     )
 end
 
@@ -224,13 +224,13 @@ tsls(y, X, Z; vcov=:HC0)
 ```
 """
 function tsls(
-    y::AbstractVector,
-    X::AbstractVecOrMat,
-    Z::AbstractMatrix,
-    W::Union{AbstractMatrix,Nothing} = nothing;
-    vcov::Symbol = :HC0,
-    weights::Union{Nothing,AbstractVector} = nothing,
-    add_intercept::Bool = true,
+        y::AbstractVector,
+        X::AbstractVecOrMat,
+        Z::AbstractMatrix,
+        W::Union{AbstractMatrix, Nothing} = nothing;
+        vcov::Symbol = :HC0,
+        weights::Union{Nothing, AbstractVector} = nothing,
+        add_intercept::Bool = true
 )
     # Input validation
     _check_weights(weights)
@@ -254,8 +254,8 @@ function tsls(
     if size(Z, 2) < k
         throw(
             ArgumentError(
-                "Model is underidentified: need at least $k instruments, got $(size(Z, 2))",
-            ),
+            "Model is underidentified: need at least $k instruments, got $(size(Z, 2))",
+        ),
         )
     end
 
@@ -335,7 +335,7 @@ function tsls(
         n = n,
         nparams = length(beta_unified),
         ninstruments = L,  # Original instrument count
-        nexogenous = size(Wmat, 2),
+        nexogenous = size(Wmat, 2)
     )
 end
 
