@@ -1,6 +1,7 @@
 # EndogenousLinearModelsEstimators.jl
 
-[![Build Status](https://github.com/gragusa/EndogenousLinearModelsEstimators.jl/workflows/CI/badge.svg)](https://github.com/gragusa/EndogenousLinearModelsEstimators.jl/actions)
+[![CI](https://github.com/gragusa/EndogenousLinearModelsEstimators.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/gragusa/EndogenousLinearModelsEstimators.jl/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/gragusa/EndogenousLinearModelsEstimators.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/gragusa/EndogenousLinearModelsEstimators.jl)
 
 A Julia package for estimating endogenous linear models using instrumental variables. Provides robust implementations of LIML (Limited Information Maximum Likelihood), Fuller bias-corrected, and 2SLS (Two-Stage Least Squares) estimators with unified API and cross-platform validation.
 
@@ -42,21 +43,21 @@ X = Matrix(card_data[:, Xnames])
 ### LIML Results:
 
 ```julia
-result_liml = iv_liml(Y, D, Z; X=X, vcov=:HC0)
+result_liml = liml(Y, D, Z, X; vcov=:HC0)
 result_liml
 ```
 
 Fuller Results (α=1):
 
 ```julia
-result_fuller = iv_fuller(Y, D, Z; X=X, a=1.0, vcov=:HC0)
+result_fuller = fuller(Y, D, Z, X; a=1.0, vcov=:HC0)
 result_fuller
 ```
 
 ### 2SLS Estimation
 
 ```julia
-result_2sls = iv_2sls(Y, D, Z; X=X, vcov=:HC0)
+result_2sls = tsls(Y, D, Z, X; vcov=:HC0)
 result_2sls
 ```
 
@@ -67,9 +68,9 @@ result_2sls
 All estimators share the same unified interface:
 
 ```julia
-iv_liml(y, x, Z; X=nothing, vcov=:HC0, weights=nothing, add_intercept=true)
-iv_fuller(y, x, Z; X=nothing, a=1.0, vcov=:HC0, weights=nothing, add_intercept=true)
-iv_2sls(y, x, Z; X=nothing, vcov=:HC0, weights=nothing, add_intercept=true)
+liml(y, x, Z, W; vcov=:HC0, weights=nothing, add_intercept=true)
+fuller(y, x, Z, W; a=1.0, vcov=:HC0, weights=nothing, add_intercept=true)
+tsls(y, x, Z, W; vcov=:HC0, weights=nothing, add_intercept=true)
 ```
 
 **Arguments:**
@@ -77,7 +78,7 @@ iv_2sls(y, x, Z; X=nothing, vcov=:HC0, weights=nothing, add_intercept=true)
 - `y`: Dependent variable (n×1)
 - `x`: Endogenous regressor(s) (n×k)
 - `Z`: Instruments (n×L), must have L ≥ k
-- `X`: Exogenous control variables (n×p), optional
+- `W`: Exogenous control variables (n×p), optional
 - `vcov`: Variance estimator (`:homoskedastic`, `:HC0`, `:HC1`)
 - `weights`: Observation weights (not implemented yet)
 - `add_intercept`: Whether to include intercept (default: true)
