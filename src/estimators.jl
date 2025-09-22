@@ -240,19 +240,23 @@ function tsls(
         k = size(RegMat, 2)
     end
 
-    # Instruments must include exogenous variables for identification
+    # Require at least as many instruments (columns in Z) as estimated parameters
+    if size(Z, 2) < k
+        throw(
+            ArgumentError(
+                "Model is underidentified: need at least $k instruments, got $(size(Z, 2))",
+            ),
+        )
+    end
+
+    # Instruments include exogenous variables for standard 2SLS formulation
     if size(Wmat, 2) > 0
-        Z_full = hcat(Z, Wmat)  # Instruments include exogenous variables
+        Z_full = hcat(Z, Wmat)
     else
         Z_full = Z
     end
 
     L_full = size(Z_full, 2)
-
-    # Check identification: need at least as many instruments as regressors
-    if L_full < k
-        throw(ArgumentError("Model is underidentified: need at least $k instruments, got $L_full"))
-    end
 
     # 2SLS estimation using efficient implementation (avoid forming projection matrix)
     ZtZ = Symmetric(Z_full'Z_full)
